@@ -292,7 +292,7 @@ class Grafics1d {
   }
 }
 function printPicture () {
-  grafic = new Grafics1d(Number(document.getElementById('xmin').value), Number(document.getElementById('xmax').value),
+  let grafic = new Grafics1d(Number(document.getElementById('xmin').value), Number(document.getElementById('xmax').value),
     Number(document.getElementById('width').value), Number(document.getElementById('height').value));
   grafic.drawAll();
   grafic.search();
