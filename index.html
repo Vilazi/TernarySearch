@@ -9,19 +9,18 @@
 <body>
 <h1>Захаренко Владимир. Задача 4.5</h1>
 <h1>Визуализировать тeрнарный поиск</h1>
-<p>Set minimum x coordinate value: <input name="parameters" id="xmin" maxlength="40" autocomplete="on" value="-5"></p>
-<p>Set maximum x coordinate value: <input name="parameters" id="xmax" maxlength="40" autocomplete="on" value="5"></p>
-<!--<p>Set minimum y coordinate value: <input name="parameters" id="ymin" maxlength="40" autocomplete="on" value="-10"></p>-->
-<!--<p>Set maximum y coordinate value: <input name="parameters" id="ymax" maxlength="40" autocomplete="on" value="10"></p>-->
-<p>Set width: <input name="parameters" id="width" maxlength="40" autocomplete="on" value="400"></p>
-<p>Set height: <input name="parameters" id="height" maxlength="40" autocomplete="on" value="300"></p>
-<p>Set function: <input name="parameters" id="function" maxlength="200" autocomplete="on" value="x*x-9"></p>
-<p>Set b: <input name="parameters" id="b" maxlength="40" autocomplete="on" value="1"></p>
-<p>Set dx: <input name="parameters" id="dx" maxlength="40" autocomplete="on" value="1e-9"></p>
-<script src="main.js"></script>
-<p><input type="button" onclick="printPicture();" value="Build a graph"></p>
-<!--<p><input type="button" onclick="if(typeof grafic != 'undefined') Autodraw(grafic);" value="Set min and max y coordinate values as min and max function values"></p>-->
-<canvas id="canvas"></canvas>
+<p>Минимальное значение х: <input name="parameters" id="xmin" maxlength="40" autocomplete="on" value="-5"></p>
+<p>Максимальное значение х: <input name="parameters" id="xmax" maxlength="40" autocomplete="on" value="5"></p>
+<p>Разрешающая способность по Х: <input name="parameters" id="width" maxlength="40" autocomplete="on" value="400"></p>
+<p>Разрешающая способность по Y: <input name="parameters" id="height" maxlength="40" autocomplete="on" value="300"></p>
+<p>Функция: <input name="parameters" id="function" maxlength="200" autocomplete="on" value="x*x-9"></p>
+<p>Параметр b: <input name="parameters" id="b" maxlength="40" autocomplete="on" value="1"></p>
+<p>Точность: <input name="parameters" id="dx" maxlength="40" autocomplete="on" value="1e-9"></p>
+<p>Временной интервал (секунды): <input name="parameters" id="time" maxlength="40" autocomplete="on" value="2"></p>
+<script src="script.js"></script>
+<p><input type="button" onclick="printPicture();console.clear();" value="Тернарный поиск"></p>
+<canvas id="canvas"></canvas><br>
+<textarea id="Textarea" rows="10" cols="70" ></textarea>
 </body>
 
 </html>
