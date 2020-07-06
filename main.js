@@ -1,5 +1,5 @@
-let globalDX = document.getElementById('dx').value;
 let roots = [];
+let time;
 class Grafics1d {
   constructor(xmin = -5, xmax = 5, W = 120, H = 100) {
     this.xmin = xmin;
@@ -9,6 +9,49 @@ class Grafics1d {
     this.W = W;
     this.H = H;
     this.f = function f(x) {
+      function sin(x) {
+        return Math.sin(x);
+      }
+      function cos(x) {
+        return Math.cos(x);
+      }
+      function abs(x) {
+        return Math.abs(x);
+      }
+      function asin(x) {
+        return Math.asin(x);
+      }
+      function acos(x) {
+        return Math.acos(x);
+      }
+      function atan(x) {
+        return Math.atan(x);
+      }
+      function ceil(x) {
+        return Math.ceil(x);
+      }
+      function exp(x) {
+        return Math.exp(x);
+      }
+      function floor(x) {
+        return Math.floor(x);
+      }
+      function log(x) {
+        return Math.log(x);
+      }
+      function round(x) {
+        return Math.round(x);
+      }
+      function sqrt(x) {
+        return Math.sqrt(x);
+      }
+      function tan(x) {
+        return Math.tan(x);
+      }
+      function tanh(x) {
+        return Math.tanh(x);
+      }
+      let b = Number(document.getElementById('b').value);
       return eval(document.getElementById('function').value);
     };
     this.Float64Array = new Float64Array(this.W);
@@ -28,10 +71,10 @@ class Grafics1d {
       fmax = Math.max(fmax, this.Float64Array[i]);
       fmin = Math.min(fmin, this.Float64Array[i]);
     }
-    this.ymax = fmax;
-    this.ymin = fmin;
+    this.ymax = fmax + 1;
+    this.ymin = fmin - 1;
   }
-  draw(fun = 'red', coordLines = 'green', nulls = 'indigo',
+  draw(intervals = [], fun = 'red', coordLines = 'green', nulls = 'indigo',
        breaks = 'magenta', background = 'grey') {
     let dx = (this.xmax - this.xmin) / this.W;
     let dy = (this.ymax - this.ymin) / this.H;
@@ -142,23 +185,6 @@ class Grafics1d {
     ctx.stroke();
     ctx.closePath();
 
-    // Breaks
-    i = 0;
-    for(let x = this.xmin; x < this.xmax; x += dx) {
-      X = (x-this.xmin)*S1;
-      if((this.Float64Array[i] > this.ymax / 16 && this.Float64Array[i + 1] < this.ymin / 16) ||
-        (this.Float64Array[i] < this.ymin / 16 && this.Float64Array[i + 1] > this.ymax / 16)) {
-        ctx.beginPath();
-        X = (x-this.xmin)*S1;
-        Y = (0-this.ymin)*S2+this.H;
-        ctx.arc(X, Y, 2, 0, 2 * Math.PI);
-        ctx.fillStyle = breaks;
-        ctx.fill();
-        ctx.closePath();
-      }
-      i++;
-    }
-
     // Nulls
     i = 0;
     for(let x = this.xmin; x < this.xmax; x += dx) {
@@ -176,9 +202,26 @@ class Grafics1d {
       i++;
     }
 
+    // Breaks
+    i = 0;
+    for(let x = this.xmin; x < this.xmax; x += dx) {
+      X = (x-this.xmin)*S1;
+      if((this.Float64Array[i] > this.ymax / 16 && this.Float64Array[i + 1] < this.ymin / 16) ||
+        (this.Float64Array[i] < this.ymin / 16 && this.Float64Array[i + 1] > this.ymax / 16)) {
+        ctx.beginPath();
+        X = (x-this.xmin)*S1;
+        Y = (0-this.ymin)*S2+this.H;
+        ctx.arc(X, Y, 2, 0, 2 * Math.PI);
+        ctx.fillStyle = breaks;
+        ctx.fill();
+        ctx.closePath();
+      }
+      i++;
+    }
+
     // Text
     ctx.fillStyle = 'white';
-    ctx.font = "20px bold";
+    ctx.font = "10px bold";
     let xmax1 = this.xmax;
     let ymax1 = this.ymax;
     let xmaxNumber = 0;
@@ -194,106 +237,94 @@ class Grafics1d {
     let Numbers = xmaxNumber + ymaxNumber;
     let s1 ='(' + this.xmin.toFixed(3) + ', ' + this.ymin.toFixed(3) + ')',
       s2 = '(' + this.xmax.toFixed(3) + ', ' + this.ymax.toFixed(3) + ')';
-    ctx.fillText(s1, 0, this.H - 10);
-    ctx.fillText(s2, this.W - Numbers * 9 - 120, 20);
+    ctx.fillText(s1, 5, this.H - 5);
+    ctx.fillText(s2, this.W - Numbers * 5 - 60, 10);
     let changedScaleInX = 'X-Axis scale - ' + ((T1 < 1) ? 1 : T1).toString() + ':' + ((T1 < 1) ? 1/T1 : 1).toString(),
       changedScaleInY = 'Y-Axis scale - ' + ((T2 < 1) ? 1 : T2).toString() + ':' + ((T2 < 1) ? 1/T2 : 1).toString();
-    ctx.fillText(changedScaleInX, 5, 20);
-    ctx.fillText(changedScaleInY, 5, 50);
-
-    // Roots
-    ctx.beginPath();
-    ctx.fillStyle = '#f9f700';
-    if(roots.length != 0) {
-      for(let extremum = 0; extremum < roots.length; extremum++) {
-        let x = roots[extremum][0];
-        let y = roots[extremum][1];
-        X = (x-this.xmin)*S1;
-        Y = (y-this.ymin)*S2+this.H;
-        ctx.arc(X, Y, 4, 0, Math.PI*2);
-        ctx.fill();
-      }
-      ctx.closePath();
-    }
+    ctx.fillText(changedScaleInX, 0, 10);
+    ctx.fillText(changedScaleInY, 0, 20);
   }
 
-  findPoints() {
-    let intervals = [];
-    let i = 0;
-    let m1 = this.xmin;
-    let m2 = m1;
-    let dx = (this.xmax - this.xmin) / this.W;
-    let f = this.Float64Array[0] > this.Float64Array[1];
-    for(let x = this.xmin + dx; x < this.xmax; x += dx) {
-      i++;
-      if(f) if(this.Float64Array[i-1] < this.Float64Array[i]) {
-        m2 = x;
-        intervals.push([m1, m2]);
-        m1 = m2;
-        f = false;
-      }
-      if(!f) if(this.Float64Array[i-1] > this.Float64Array[i]) {
-        m2 = x;
-        intervals.push([m1, m2]);
-        m1 = m2;
-        f = true;
-      }
-    }
-    if(intervals.length == 0) intervals.push([m1, this.xmax]);
-    return intervals;
-  }
-
-  TernarySearch(interval) {
-    this.xmin = interval[0];
-    this.xmax = interval[1];
-    let extremum = [this.xmin, this.Float64Array[0]];
-    let f = extremum[1] < this.Float64Array[1];
-    let dx = (this.xmax - this.xmin) / this.W;
+  takeIntervals() {
+    let inIntervals = [];
+    let increasing = (this.Float64Array[0] < this.Float64Array[1]);
     let i = 1;
-    for(let x = this.xmin + dx; x <= this.xmax; x += dx) {
-      if(f) {
-        if(extremum[1] < this.Float64Array[i]) {
-          extremum[1] = this.Float64Array[i];
-          extremum[0] = x;
-        }
-        else break;
+    let dx = (this.xmax - this.xmin)/this.W;
+    let left = this.xmin;
+    for(let x = this.xmin; x <= this.xmax; x += dx) {
+      if(increasing && this.Float64Array[i - 1] > this.Float64Array[i]) {
+        let right = x;
+        inIntervals.push([left, right, increasing]);
+        increasing = false;
+        left = right;
       }
-      else {
-        if(extremum[1] > this.Float64Array[i]) {
-          extremum[1] = this.Float64Array[i];
-          extremum[0] = x;
-        }
-        else break;
+      else if(!increasing && this.Float64Array[i - 1] < this.Float64Array[i]) {
+        let right = x;
+        inIntervals.push([left, right, increasing]);
+        increasing = true;
+        left = right;
       }
       i++;
     }
-    if(extremum > globalDX) {
-      return this.TernarySearch(interval);
-    }
-    else {
-      return extremum;
-    }
+    console.log(inIntervals);
+    return inIntervals;
   }
 
-  drawAll() {
-    this.evaluate();
-    this.autodraw();
-    this.draw();
-  }
-
-  search() {
-    let intervals = this.findPoints();
-    console.log(intervals);
-    let k = intervals.length;
-    for(let interval = 0; interval < k; interval++) {
-      roots.push(this.TernarySearch(intervals[interval]));
+  TernarySearch(intervals) {
+    time = Number(document.getElementById('time').value) * 1000;
+    let iterationNumbers = [];
+    let globalDX = document.getElementById('dx').value;
+    for(let i = 0; i < intervals.length; i++) {
+      let iteration = 1;
+      while(intervals[i][1]-intervals[i][0] >= globalDX) {
+        let m1 = intervals[i][0] + (intervals[i][1] - intervals[i][0])/3;
+        let m2 = intervals[i][1] - (intervals[i][1] - intervals[i][0])/3;
+        if(intervals[i][2]) {
+          if(this.f(m1) < this.f(m2)) intervals[i][0] = m1;
+          else intervals[i][1] = m2;
+        }
+        else {
+          if(this.f(m1) > this.f(m2)) intervals[i][0] = m1;
+          else intervals[i][1] = m2;
+        }
+        iteration++;
+      }
+      roots.push([(intervals[i][1]+intervals[i][0])/2, this.f((intervals[i][1]+intervals[i][0])/2)]);
+      iterationNumbers.push(iteration);
     }
     console.log(roots);
+    let j = 0;
+    let canvas = document.getElementById('canvas');
+    let ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#f9f700';
+    let S1 = graph.W / (graph.xmax - graph.xmin);
+    let S2 = graph.H / (graph.ymin - graph.ymax);
+    let timerID = setInterval(function () {
+      let s = 'x=' + roots[j][0] + ', y=' + roots[j][1] + ', iterations: ' + iterationNumbers[j] + ';\n';
+      document.getElementById('Textarea').value += s;
+      let x = Number(roots[j][0]);
+      let y = Number(roots[j][1]);
+      let X1 = (x - graph.xmin)*S1;
+      let Y1 = (y - graph.ymin)*S2+graph.H;
+      ctx.beginPath();
+      ctx.arc(X1, Y1, 3, 0, Math.PI*2);
+      ctx.fill();
+      ctx.closePath();
+      j++;
+      if(j >= roots.length) clearInterval(timerID);
+    }, time);
   }
 }
+
+let graph;
 function printPicture () {
-  let grafic = new Grafics1d(Number(document.getElementById('xmin').value), Number(document.getElementById('xmax').value),
+  document.getElementById('Textarea').value = '';
+  roots = [];
+  graph = new Grafics1d(Number(document.getElementById('xmin').value), Number(document.getElementById('xmax').value),
     Number(document.getElementById('width').value), Number(document.getElementById('height').value));
-  grafic.drawAll();
-  grafic.search();
+  graph.evaluate();
+  graph.autodraw();
+  graph.draw();
+  let intervals = graph.takeIntervals();
+  graph.TernarySearch(intervals);
 }
